@@ -41,8 +41,15 @@ nav.sections{position:sticky;top:0;z-index:5;background:var(--color-paper);borde
 .sec-list button:hover{border-bottom-color:var(--color-rule)}
 .sec-list button[aria-pressed="true"]{border-bottom-color:var(--color-accent);color:var(--color-accent)}
 .front{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr);gap:var(--gap);padding:var(--gap) 0;border-bottom:1px solid var(--color-ink)}
+.lead{grid-column:1;grid-row:1;min-width:0}
 .lead h2{font-family:var(--font-display);font-weight:800;font-style:normal;font-size:clamp(30px,4.2vw,54px);line-height:1.04;margin:8px 0 12px;overflow-wrap:anywhere;min-width:0}
 .lead p.sum{font-size:20px;max-width:62ch;margin:0 0 12px}
+.secondary{grid-column:1;grid-row:2;min-width:0;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:16px var(--gap);align-items:start;border-top:1px solid var(--color-rule);padding-top:var(--gap)}
+.secondary:empty{display:none}
+.secondary h2{font-family:var(--font-display);font-weight:700;font-size:clamp(22px,2.6vw,32px);line-height:1.12;margin:8px 0 8px;overflow-wrap:anywhere}
+.secondary p.sum{font-size:17px;margin:0 0 8px}
+.credit{margin:6px 0 0;font-size:12px;line-height:1.35;color:var(--color-muted);overflow-wrap:anywhere}
+.credit a{text-decoration:underline;text-underline-offset:2px}
 figure{margin:0}
 .img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;background:var(--color-imgbg)}
 .kicker{color:var(--color-accent)}
@@ -50,7 +57,7 @@ figure{margin:0}
 .src{margin:8px 0 0;font-family:var(--font-label);font-size:13px;color:var(--color-muted)}
 .src a{display:inline-block;padding:4px 0;min-height:24px;text-decoration:underline;text-decoration-color:var(--color-rule);text-underline-offset:3px}
 .src a:hover{color:var(--color-accent);text-decoration-color:currentColor}
-aside.latest{border-left:1px solid var(--color-rule);padding-left:var(--gap)}
+aside.latest{grid-column:2;grid-row:1 / span 2;align-self:stretch;border-left:1px solid var(--color-rule);padding-left:var(--gap)}
 aside.latest h2{margin:0 0 6px;border-bottom:2px solid var(--color-ink);padding-bottom:6px}
 .latest ol{list-style:none;margin:0;padding:0}
 .latest li{padding:10px 0;border-bottom:1px solid var(--color-rule);display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px}
@@ -70,12 +77,12 @@ aside.latest h2{margin:0 0 6px;border-bottom:2px solid var(--color-ink);padding-
 footer{border-top:3px double var(--color-ink);padding:24px 0 40px;color:var(--color-muted);font-size:15px}
 footer strong{color:var(--color-ink)}
 @media (max-width:1100px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (max-width:820px){.front{grid-template-columns:minmax(0,1fr)}aside.latest{border-left:0;padding-left:0}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:820px){.front{grid-template-columns:minmax(0,1fr)}.lead,.secondary,aside.latest{grid-column:1;grid-row:auto}.secondary{grid-template-columns:minmax(0,1fr)}aside.latest{border-left:0;padding-left:0}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:560px){.grid{grid-template-columns:minmax(0,1fr)}.card{padding-right:0}.card.wide{grid-column:auto}.card.wide h3{font-size:23px}.mast-top{justify-content:center}.lead p.sum{font-size:18px}}
 @media (prefers-reduced-motion:no-preference){.card,.lead{transition:opacity .2s}}
 figure a{display:block}
-.lead h2 a,.card h3 a{text-decoration:none}
-.lead h2 a:hover,.card h3 a:hover{text-decoration:underline}
+.lead h2 a,.secondary h2 a,.card h3 a{text-decoration:none}
+.lead h2 a:hover,.secondary h2 a:hover,.card h3 a:hover{text-decoration:underline}
 .kicker+.kicker{margin-left:.7em}
 </style>
 </head>
@@ -90,6 +97,7 @@ figure a{display:block}
 <main id="contenido" class="wrap">
   <section class="front" aria-label="Portada">
     <article class="lead" id="lead"></article>
+    <article class="secondary" id="secundaria"></article>
     <aside class="latest" aria-labelledby="ult"><h2 id="ult" class="label">Lo último</h2><ol id="latest"></ol></aside>
   </section>
   <section aria-labelledby="gh">
@@ -105,11 +113,32 @@ figure a{display:block}
 const CONFIG={
   nombre:"El Cronista Hoy",
   lema:"La actualidad de Colombia y el mundo, resumida y con la fuente a un clic",
-  destacada:"noticias/region-caribe-ahorro-energia.html",
+  destacada:"noticias/explosion-peaje-casanare.html",
+  secundaria:"noticias/region-caribe-ahorro-energia.html",
   ultimas:10,
   /* Notas propias. propia:true enlaza a la página interna, sin fuente externa.
+     destacada es la portada; secundaria es el segundo lugar, también propio.
      Para sumar una: agregue el objeto aquí y cree su HTML en noticias/. */
   propias:[{
+    titulo:"Explosión de carro bomba en Casanare deja cuatro mujeres heridas",
+    resumen:"Cuatro trabajadoras resultaron heridas tras la explosión de un carro bomba en un peaje ubicado entre Villanueva y Monterrey, en Casanare. El ataque ocurrió el 23 de octubre y causó daños en la infraestructura vial.",
+    secciones:["Judicial","Regiones"],
+    fecha:"2026-10-24T16:00:00-05:00",
+    fechaTexto:"24 de octubre de 2026",
+    url:"noticias/explosion-peaje-casanare.html",
+    imagen:"img/via-llanos-yopal.jpg",
+    alt:"Doble calzada en Yopal, Casanare, con señales de obra y cielo nublado",
+    pie:"Vía en los Llanos Orientales. Imagen de referencia; no corresponde al lugar del atentado.",
+    propia:true,
+    credito:{
+      autor:"Cristian170",
+      licencia:"CC BY-SA 3.0",
+      licenciaUrl:"https://creativecommons.org/licenses/by-sa/3.0/deed.es",
+      fuente:"Wikimedia Commons",
+      fuenteUrl:"https://commons.wikimedia.org/wiki/File:DOBLE_CALZADA_YOPAL_-_CASANARE9.jpg",
+      nota:"Imagen reducida de tamaño"
+    }
+  },{
     titulo:"Región Caribe pide revisar medidas de ahorro de energía",
     resumen:"Representantes de gremios y autoridades locales solicitaron revisar las medidas de ahorro energético en el Caribe colombiano. La discusión se centra en las tarifas del servicio y en el impacto de las decisiones regulatorias sobre la región.",
     secciones:["Economía","Regiones"],
@@ -134,6 +163,8 @@ const items=[...propias,...NOTICIAS].map(n=>({
   d:new Date(n.fecha)
 })).sort((a,b)=>b.d-a.d);
 const lead=items.find(n=>n.url===CONFIG.destacada)||items[0];
+const secundaria=items.find(n=>n.url===CONFIG.secundaria&&n!==lead)||null;
+const pinned=[lead,secundaria].filter(Boolean);
 const enSec=(n,sec)=>sec==="Todas"||n.secciones.includes(sec);
 document.title=CONFIG.nombre+" · Noticias";
 $("#fbrand").textContent=CONFIG.nombre;$("#tagline").textContent=CONFIG.lema;
@@ -142,22 +173,33 @@ $("#conteo").textContent=items.length+" noticias";
 const link=n=>n.propia
   ?`<p class="src"><a href="${esc(n.url)}">Leer la nota</a></p>`
   :`<p class="src">Fuente: <a href="${esc(n.url)}" target="_blank" rel="noopener">${esc(n.fuente)}<span class="sr"> (nota original, se abre en otra pestaña)</span></a></p>`;
+const figcap=n=>{
+  const bits=[];
+  if(n.pie) bits.push(esc(n.pie));
+  const c=n.credito;
+  if(c){
+    const nota=c.nota?`. ${esc(c.nota)}`:"";
+    bits.push(`Foto: <a href="${esc(c.fuenteUrl)}" target="_blank" rel="noopener">${esc(c.autor)}</a>, <a href="${esc(c.licenciaUrl)}" target="_blank" rel="noopener">${esc(c.licencia)}</a>, vía <a href="${esc(c.fuenteUrl)}" target="_blank" rel="noopener">${esc(c.fuente)}</a>${nota}`);
+  }
+  return bits.length?`<figcaption class="credit">${bits.join("<br>")}</figcaption>`:"";
+};
 const fig=(n,lazy)=>{
   if(!n.imagen) return "";
   const img=`<img class="img" src="${esc(n.imagen)}" alt="${esc(n.propia?(n.alt||""):"")}" ${lazy?'loading="lazy"':''} referrerpolicy="no-referrer" onerror="this.closest('figure').remove()">`;
-  return `<figure>${n.propia?`<a href="${esc(n.url)}">${img}</a>`:img}</figure>`;
+  return `<figure>${n.propia?`<a href="${esc(n.url)}">${img}</a>`:img}${n.propia?figcap(n):""}</figure>`;
 };
 const titulo=(tag,n)=>n.propia?`<${tag}><a href="${esc(n.url)}">${esc(n.titulo)}</a></${tag}>`:`<${tag}>${esc(n.titulo)}</${tag}>`;
 const meta=n=>`${n.secciones.map(s=>`<span class="label kicker">${esc(s)}</span>`).join("")} <time class="meta" datetime="${esc(n.fecha)}">· ${n.fechaTexto?esc(n.fechaTexto):fFecha.format(n.d)}</time>`;
 $("#lead").innerHTML=`${fig(lead,false)}<div style="margin-top:12px">${meta(lead)}</div>${titulo("h2",lead)}<p class="sum">${esc(lead.resumen)}</p>${link(lead)}`;
-$("#latest").innerHTML=items.filter(n=>n!==lead).slice(0,CONFIG.ultimas).map(n=>`<li><time datetime="${esc(n.fecha)}">${fHora.format(n.d)}</time><a href="${esc(n.url)}"${n.propia?"":` target="_blank" rel="noopener"`}>${esc(n.titulo)}</a></li>`).join("");
+if(secundaria) $("#secundaria").innerHTML=`${fig(secundaria,true)}<div>${meta(secundaria)}${titulo("h2",secundaria)}<p class="sum">${esc(secundaria.resumen)}</p>${link(secundaria)}</div>`;
+$("#latest").innerHTML=items.filter(n=>!pinned.includes(n)).slice(0,CONFIG.ultimas).map(n=>`<li><time datetime="${esc(n.fecha)}">${fHora.format(n.d)}</time><a href="${esc(n.url)}"${n.propia?"":` target="_blank" rel="noopener"`}>${esc(n.titulo)}</a></li>`).join("");
 const secCounts=new Map();
 items.forEach(n=>n.secciones.forEach(s=>secCounts.set(s,(secCounts.get(s)||0)+1)));
 const secs=["Todas",...[...secCounts.keys()].sort((a,b)=>secCounts.get(b)-secCounts.get(a))];
 $("#secs").innerHTML=secs.map((s,i)=>`<li><button type="button" aria-pressed="${i===0}" data-s="${esc(s)}">${esc(s)}</button></li>`).join("");
 function render(sec){
-  const list=items.filter(n=>n!==lead&&enSec(n,sec));
-  const extra=sec!=="Todas"&&enSec(lead,sec)?[lead]:[];
+  const list=items.filter(n=>!pinned.includes(n)&&enSec(n,sec));
+  const extra=sec!=="Todas"?pinned.filter(n=>enSec(n,sec)):[];
   const all=[...extra,...list];
   $("#gh").textContent=sec==="Todas"?"Más noticias":sec;
   $("#filtro").textContent=all.length+(all.length===1?" nota":" notas");
